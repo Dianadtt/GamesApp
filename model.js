@@ -59,4 +59,5 @@ function deleteGame(gameID) {
         console.log(apiresponse)
     })
 }
+
 //var deleteBtns = document.getElementsByClassName(".delete-btn").add
