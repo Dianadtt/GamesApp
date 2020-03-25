@@ -48,7 +48,7 @@ fetch(apiURL + "/games", {
 });
 
 function deleteGame(gameID) {
-    console.log("delete the game ", gameID)
+    //console.log("delete the game ", gameID)
     fetch(apiURL + "/games/" + gameID, {
         method: "DELETE"
 
@@ -57,7 +57,62 @@ function deleteGame(gameID) {
 
     }).then(function(apiresponse) {
         console.log(apiresponse)
-    })
+        location.reload(true)
+    });
+}
+document.querySelector(".submit-btn").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    const gameTitle = document.getElementById("gameTitle");
+    const gameDescription = document.getElementById("gameDescription");
+    const gameGender = document.getElementById("gameGender");
+    const gamePublisher = document.getElementById("gamePublisher");
+    const gameImageUrl = document.getElementById("gameImageUrl");
+    const gameRelese = document.getElementById("gameRelese");
+
+    validateFormElement(gameTitle, "the title is required!")
+    validateFormElement(gameGender, "the gender is required!")
+    validateFormElement(gameImageUrl, "the image is required!")
+    validateFormElement(gameRelese, "the relese is required!")
+
+    if (gameTitle.value !== "" && gameGender.value !== "" && gameImageUrl.value !== "" && gameRelese.value !== "") {
+
+        const requestParams = {
+            title: gameTitle.value,
+            releaseDate: gameDescription.value,
+            gender: gameGender.value,
+            publisher: gamePublisher.value,
+            imageUrl: gameImageUrl.value,
+            description: gameDescription.value
+        };
+        createGameRequest(requestParams)
+    }
+});
+
+function validateFormElement(inputElement, errorMessage) {
+    if (inputElement.value === "") {
+        if (!document.querySelector('[rel="' + inputElement.id + '"]')) {
+            inputElement.classList.add("inputError")
+            const errorMsgElement = document.createElement("span");
+            errorMsgElement.setAttribute("rel", inputElement.id);
+            errorMsgElement.classList.add("errorMsg")
+            errorMsgElement.innerHTML = errorMessage;
+            inputElement.after(errorMsgElement)
+        }
+    } else {
+        if (document.querySelector('[rel="' + inputElement.id + '"]')) {
+            document.querySelector('[rel="' + inputElement.id + '"]').remove()
+        }
+    }
 }
 
-//var deleteBtns = document.getElementsByClassName(".delete-btn").add
+
+function createGameRequest(gameObject) {
+    fetch(apiURL + "/games", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: JSON.stringify(gameObject)
+    })
+}
