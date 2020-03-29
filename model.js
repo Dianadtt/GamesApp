@@ -10,7 +10,7 @@ fetch(apiURL + "/games", {
 }).then(function(arrayOfGames) {
     // console.log("the respons " + arrayOfGames);
 
-    var container = document.querySelector(".container")
+    var container1 = document.querySelector(".container")
 
     //     for (let i = 0; i < arrayOfGames.length; i++) {
     //         // console.log(arrayOfGames[i]);
@@ -34,16 +34,19 @@ fetch(apiURL + "/games", {
     //optimizare
     let gameElements = ""
     for (let i = 0; i < arrayOfGames.length; i++) {
-        gameElements += "<h1>" + arrayOfGames[i].title + "</h1>" +
-            "<img src='" + arrayOfGames[i].imageUrl + "' />" +
-            "<p>" + arrayOfGames[i].description + "</p>" +
-            "<button class= 'delete-btn' id ='" +
-            " onClick= \"deleteGame('" + arrayOfGames[i]._id + "')\">Delete</button>'";
+        // gameElements += "<h1>" + arrayOfGames[i].title + "</h1>" +
+        //     "<img src='" + arrayOfGames[i].imageUrl + "' />" +
+        //     "<p>" + arrayOfGames[i].description + "</p>" +
+        //     "<button class= 'delete-btn' id ='" +
+        //     " onClick= \"deleteGame('" + arrayOfGames[i]._id + "')\">Delete</button>'";
 
-
+        gameElements += `<h1>${arrayOfGames[i].title}</h1> 
+                        <img src="${arrayOfGames[i].imageUrl}" />
+                         <p>${arrayOfGames[i].description}</p> 
+                        <button class="delete-btn" onclick="deleteGame('${arrayOfGames[i]._id}')">Delete</button>`;
 
     }
-    container.innerHTML = gameElements;
+    container1.innerHTML = gameElements;
 
 });
 
@@ -60,7 +63,7 @@ function deleteGame(gameID) {
         location.reload(true)
     });
 }
-document.querySelector(".submit-btn").addEventListener("click", function(event) {
+document.querySelector(".submitBtn").addEventListener("click", function(event) {
     event.preventDefault();
 
     const gameTitle = document.getElementById("gameTitle");
@@ -68,18 +71,20 @@ document.querySelector(".submit-btn").addEventListener("click", function(event) 
     const gameGender = document.getElementById("gameGender");
     const gamePublisher = document.getElementById("gamePublisher");
     const gameImageUrl = document.getElementById("gameImageUrl");
-    const gameRelese = document.getElementById("gameRelese");
+    const gameRelease = document.getElementById("gameRelease");
 
     validateFormElement(gameTitle, "the title is required!")
     validateFormElement(gameGender, "the gender is required!")
-    validateFormElement(gameImageUrl, "the image is required!")
-    validateFormElement(gameRelese, "the relese is required!")
+    validateFormElement(gameImageUrl, "the image URL is required!")
+    validateFormElement(gameRelease, "the release date is required!")
 
-    if (gameTitle.value !== "" && gameGender.value !== "" && gameImageUrl.value !== "" && gameRelese.value !== "") {
+    validateReleaseTimestampElement(gameRelease, "The release date you provided is not a valid timestamp!");
+
+    if (gameTitle.value !== "" && gameGender.value !== "" && gameImageUrl.value !== "" && gameRelease.value !== "") {
 
         const requestParams = {
             title: gameTitle.value,
-            releaseDate: gameDescription.value,
+            releaseDate: gameRelease.value,
             gender: gameGender.value,
             publisher: gamePublisher.value,
             imageUrl: gameImageUrl.value,
@@ -92,20 +97,31 @@ document.querySelector(".submit-btn").addEventListener("click", function(event) 
 function validateFormElement(inputElement, errorMessage) {
     if (inputElement.value === "") {
         if (!document.querySelector('[rel="' + inputElement.id + '"]')) {
-            inputElement.classList.add("inputError")
-            const errorMsgElement = document.createElement("span");
-            errorMsgElement.setAttribute("rel", inputElement.id);
-            errorMsgElement.classList.add("errorMsg")
-            errorMsgElement.innerHTML = errorMessage;
-            inputElement.after(errorMsgElement)
+            buildErrorMessage(inputElement, errorMessage);
         }
     } else {
         if (document.querySelector('[rel="' + inputElement.id + '"]')) {
-            document.querySelector('[rel="' + inputElement.id + '"]').remove()
+            console.log("the error is erased!");
+            document.querySelector('[rel="' + inputElement.id + '"]').remove();
+            inputElement.classList.remove("inputError");
         }
     }
 }
 
+function validateReleaseTimestampElement(inputElement, errorMessage) {
+    if (isNaN(inputElement.value) && inputElement.value !== "") {
+        buildErrorMessage(inputElement, errorMessage);
+    }
+}
+
+function buildErrorMessage(inputEl, errosMsg) {
+    inputEl.classList.add("inputError");
+    const errorMsgElement = document.createElement("span");
+    errorMsgElement.setAttribute("rel", inputEl.id);
+    errorMsgElement.classList.add("errorMsg");
+    errorMsgElement.innerHTML = errosMsg;
+    inputEl.after(errorMsgElement);
+}
 
 function createGameRequest(gameObject) {
     fetch(apiURL + "/games", {
