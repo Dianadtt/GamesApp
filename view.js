@@ -65,7 +65,8 @@ function createDomElement(gameObj) {
     //----------------cod eu ---------------------------
     function updateGameInDOM() {
         const form = document.getElementById("updateForm")
-
+            //<button class="update-btn" id="5e914c5db4003f00201629ed">Edit Game</button>  -> this button was created with DOM
+            // <button class="update-btn" form="updateForm" value="Submit">Edit Game</button> ->to add the atribute form to the button(the button is not belonging to the update form element)
     }
 
 
