@@ -13,19 +13,16 @@ function getGamesList(callbackFunction) {
     });
 }
 
+
 function deleteGame(gameID, callbackFunction) {
     fetch(apiURL + "/games/" + gameID, {
         method: "DELETE"
-
     }).then(function(r) {
         return r.text();
-
     }).then(function(apiresponse) {
-        callbackFunction(api)
+        callbackFunction(apiresponse)
     });
 }
-
-
 
 
 function createGameRequest(gameObject, callBackCreateGame) {
@@ -35,5 +32,26 @@ function createGameRequest(gameObject, callBackCreateGame) {
             "Content-Type": "application/x-www-form-urlencoded",
         },
         body: gameObject
-    }).then(function(response))
+    }).then(function(response) {
+        return response.json();
+    }).then(function(createdGame) {
+        console.log(createdGame);
+        callBackCreateGame(createdGame)
+    });
+};
+
+
+function updateGameRequest(updateGameObj, callBackCreateGame) {
+    fetch(apiURL + "/games", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        nody: gameObject
+    }).then(function(response) {
+        return response.json();
+    }).then(function(updatedGame) {
+        console.log(updatedGame);
+        callBackCreateGame(updatedGame);
+    });
 }

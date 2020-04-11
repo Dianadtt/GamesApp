@@ -1,30 +1,30 @@
-var container1 = document.querySelector(".container")
-
+//var container1 = document.querySelector(".container")
 getGamesList(function(arrayOfGames) {
     for (let i = 0; i < arrayOfGames.length; i++) {
         createDomElement(arrayOfGames[i])
-
-        document.getElementsById(`${arrayOfGames[i]._id}`).addEventListener("click", function(event) {
-
-            deleteGame(event.target.getAttribute("id"), function(apiResponse) {
-                console.log(apiResponse)
-                removeDeleteElementFromDOM(event.target.parentElement)
-            });
-        });
     };
 });
 
 function createDomElement(gameObj) {
     var container1 = document.querySelector(".container")
     const gameElement = document.createElement("div")
-    gameElement.innerHTML += `<h1>${arrayOfGames[i].title}</h1> 
-                        <img src="${arrayOfGames[i].imageUrl}" />
-                         <p>${arrayOfGames[i].description}</p> 
-                        <button class="delete-btn" id="${arrayOfGames[i]._id}">Delete</button>`;
+    gameElement.innerHTML += `<h1>${gameObj.title}</h1> 
+                        <img src="${gameObj.imageUrl}" />
+                         <p>${gameObj.description}</p> 
+                        <button class="delete-btn" id="${gameObj._id}">Delete Game</button>;
+                        <button class="update-btn" id="${gameObj._id}">Edit Game</button>`;
 
-}
+    container1.appendChild(gameElement);
 
-function removeDeleteElementFromDOM(domElement) {
+    document.getElementById(`${gameObj._id}`).addEventListener("click", function(event) {
+        deleteGame(event.target.getAttribute("id"), function(apiResponse) {
+            console.log(apiResponse)
+            removeDeletedElementFromDOM(event.target.parentElement);
+        });
+    });
+};
+
+function removeDeletedElementFromDOM(domElement) {
     domElement.remove()
 }
 
@@ -56,6 +56,8 @@ function buildErrorMessage(inputEl, errosMsg) {
     errorMsgElement.innerHTML = errosMsg;
     inputEl.after(errorMsgElement);
 }
+
+
 document.querySelector(".submitBtn").addEventListener("click", function(event) {
     event.preventDefault();
 
@@ -73,9 +75,7 @@ document.querySelector(".submitBtn").addEventListener("click", function(event) {
 
     validateReleaseTimestampElement(gameRelease, "The release date you provided is not a valid timestamp!");
 
-
     if (gameTitle.value !== "" && gameGender.value !== "" && gameImageUrl.value !== "" && gameRelease.value !== "") {
-
         var urlencoded = new URLSearchParams();
         urlencoded.append("title", gameTitle.value)
         urlencoded.append("releaseDate", gameRelease.value)
@@ -83,18 +83,7 @@ document.querySelector(".submitBtn").addEventListener("click", function(event) {
         urlencoded.append("publisher", gamePublisher.value)
         urlencoded.append("imageUrl", gameImageUrl.value)
         urlencoded.append("description", gameDescription.value)
-        console.log("the ", urlencoded)
-            //http://www.google.com/some/path/to/place/on/server?cheie1=valoare1&cheie2=valoare2   
-            // const json = {
-            //     title: gameTitle.value,
-            //     releaseDate: gameRelease.value,
-            //     gender: gameGender.value,
-            //     publisher: gamePublisher.value,
-            //     imageUrl: gameImageUrl.value,
-            //     description: gameDescription.value
-            // };
-        createGameRequest(urlencoded, function(newlyCreatedGame) {
 
-        })
+        createGameRequest(urlencoded, createDomElement);
     }
-});
+})
