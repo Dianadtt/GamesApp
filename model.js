@@ -47,7 +47,7 @@ function updateGameRequest(updateGameObj, callBackCreateGame) {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        nody: gameObject
+        // body: gameObject
     }).then(function(response) {
         return response.json();
     }).then(function(updatedGame) {
