@@ -28,6 +28,22 @@
         color: white;
     }
     
+    .updateBtn {
+        width: 100px;
+        height: 20px;
+        background-color: green;
+        border: none;
+        color: white;
+    }
+    
+    .cancelBtn {
+        width: 100px;
+        height: 20px;
+        background-color: red;
+        border: none;
+        color: white;
+    }
+    
     img {
         width: 90px;
         float: left;
@@ -67,4 +83,17 @@
         color: red;
         display: block;
         font-size: 14px;
+    }
+    
+    #updateForm {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #updateForm>label,
+    #updateForm>input,
+    #updateForm>textarea,
+    #updateForm>select {
+        display: block;
+        margin: 5px 10px;
     }
