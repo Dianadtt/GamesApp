@@ -41,17 +41,17 @@ function createGameRequest(gameObject, callBackCreateGame) {
 };
 
 
-function updateGameRequest(updateGameObj, callBackCreateGame) {
-    fetch(apiURL + "/games", {
-        method: "POST",
+function updateGameRequest(gameId, updateGameObj, callBackUpdateGame) {
+    fetch(apiURL + `/games/${gameId}`, {
+        method: "PUT",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        // body: gameObject
+        body: updateGameObj
     }).then(function(response) {
         return response.json();
     }).then(function(updatedGame) {
         console.log(updatedGame);
-        callBackCreateGame(updatedGame);
+        callBackUpdateGame(updatedGame);
     });
 }
