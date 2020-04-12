@@ -46,7 +46,6 @@ function removeDeletedElementFromDOM(domElement) {
     domElement.remove()
 }
 
-//----------------cod eu ---------------------------
 function showUpdateFormInDOM(domElement, gameObj) {
     const form = document.getElementById("updateForm");
     const gameTitleElement = form.querySelector('input[name=gameTitle]');
@@ -81,8 +80,6 @@ function showUpdateFormInDOM(domElement, gameObj) {
     });
 }
 
-
-//----------------cod eu -----------------------------
 function validateFormElement(inputElement, errorMessage) {
     if (inputElement.value === "") {
         if (!document.querySelector('[rel="' + inputElement.id + '"]')) {
