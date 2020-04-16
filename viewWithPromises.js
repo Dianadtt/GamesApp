@@ -1,9 +1,10 @@
 //var container1 = document.querySelector(".container")
-async function getGames() {
-    const gamesList = await getGamesList();
-    for (let i = 0; i < gamesList.length; i++) {
-        createDomElement(gamesList[i])
-    };
+function getGames() {
+    getGamesList().then(function(gamesList) {
+        for (let i = 0; i < gamesList.length; i++) {
+            createDomElement(gamesList[i])
+        };
+    });
 }
 getGames()
 
@@ -18,9 +19,8 @@ function createDomElement(gameObj) {
                         <button class="update-btn" game-id="${gameObj._id}">Edit Game</button>`;
     gameElement.setAttribute('id', gameObj._id);
     container1.appendChild(gameElement);
-    gameElement.getElementsByClassName('delete-btn')[0].addEventListener("click", async function(event) {
-        await deleteGame(event.target.getAttribute("game-id"));
-        removeDeletedElementFromDOM(event.target.parentElement);
+    gameElement.getElementsByClassName('delete-btn')[0].addEventListener("click", function(event) {
+        deleteGame(event.target.getAttribute("game-id")).then(removeDeletedElementFromDOM(event.target.parentElement));
     });
     gameElement.getElementsByClassName('update-btn')[0].addEventListener("click", function(event) {
         showUpdateFormInDOM(event.target.parentElement, gameObj);
@@ -34,10 +34,10 @@ function updateDomElement(gameObj) {
                          <p>${gameObj.description}</p> 
                         <button class="delete-btn" game-id="${gameObj._id}">Delete Game</button>
                         <button class="update-btn" game-id="${gameObj._id}">Edit Game</button>`;
-    gameElement.getElementsByClassName('delete-btn')[0].addEventListener("click", async function(event) {
-        await deleteGame(event.target.getAttribute("game-id"))
-        removeDeletedElementFromDOM(event.target.parentElement);
+    gameElement.getElementsByClassName('delete-btn')[0].addEventListener("click", function(event) {
+        deleteGame(event.target.getAttribute("game-id")).then(removeDeletedElementFromDOM(event.target.parentElement))
     });
+
     gameElement.getElementsByClassName('update-btn')[0].addEventListener("click", function(event) {
         showUpdateFormInDOM(event.target.parentElement, gameObj);
     });
@@ -58,7 +58,7 @@ function showUpdateFormInDOM(domElement, gameObj) {
     gameImageUrlElement.value = gameObj.imageUrl;
     domElement.appendChild(form);
 
-    form.querySelector('button[id=saveGameBtn]').addEventListener('click', async function(e) {
+    form.querySelector('button[id=saveGameBtn]').addEventListener('click', function(e) {
         e.preventDefault();
         var urlencoded = new URLSearchParams();
         urlencoded.append("title", gameTitleElement.value)
@@ -67,11 +67,16 @@ function showUpdateFormInDOM(domElement, gameObj) {
         urlencoded.append("publisher", gameObj.publisher)
         urlencoded.append("imageUrl", gameImageUrlElement.value)
         urlencoded.append("description", gameDescriptionElement.value);
-        const updatedGame = await updateGameRequest(gameObj._id, urlencoded);
-        if (updatedGame !== undefined) {
-            updatedGame._id = gameObj._id;
-            updateDomElement(updatedGame);
+
+        function getUpdatedGame() {
+            updateGameRequest(gameObj._id, urlencoded).then(function(updatedGame) {
+                if (updatedGame !== undefined)
+                    updatedGame._id = gameObj._id;
+                updateDomElement(updatedGame);
+            });
         }
+        getUpdatedGame()
+
         document.getElementById('formContainer').appendChild(form);
     });
     form.querySelector('button[id=cancelUpdateGameBtn]').addEventListener('click', function(e) {
@@ -110,7 +115,7 @@ function buildErrorMessage(inputEl, errosMsg) {
 }
 
 
-document.querySelector(".submitBtn").addEventListener("click", async function(event) {
+document.querySelector(".submitBtn").addEventListener("click", function(event) {
     event.preventDefault();
 
     const gameTitle = document.getElementById("gameTitle");
@@ -136,7 +141,6 @@ document.querySelector(".submitBtn").addEventListener("click", async function(ev
         urlencoded.append("imageUrl", gameImageUrl.value)
         urlencoded.append("description", gameDescription.value)
 
-        const newGame = await createGameRequest(urlencoded);
-        createDomElement(newGame)
+        createGameRequest(urlencoded).then(createDomElement)
     }
 })
