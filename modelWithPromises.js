@@ -1,7 +1,7 @@
-var apiURL = "https://games-world.herokuapp.com";
+var apiURL = "https://games-app-siit.herokuapp.com";
 
 function getGamesList() {
-    return fetch('https://games-world.herokuapp.com/games')
+    return fetch(apiURL + "/games")
         .then((response) => {
             return response.json();
         })
